@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yashpal Dashboard | My Space</title>
+  <meta name="description" content="Premium Neo-Brutalist dashboard for managing, tracking, and previewing personal websites and projects.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header>
+      <div class="logo-section" style="display: flex; align-items: center; gap: 14px;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="border: 3px solid #000000; box-shadow: 3px 3px 0px #000000; background-color: var(--color-yellow); padding: 4px; flex-shrink: 0; transform: rotate(-5deg);">
+          <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" fill="var(--color-pink)" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <h1 style="border-bottom: 4px solid var(--text-primary); display: inline-block; line-height: 1; margin-bottom: 2px;">YASHPAL'S DASHBOARD</h1>
+          <p style="font-size: 0.95rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">MANAGE &middot; TRACK &middot; BUILD</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="add-site-btn" class="btn btn-primary">
+          <i data-lucide="plus-circle"></i> Add Website
+        </button>
+        <a href="https://excalidraw.com" target="_blank" class="btn btn-pink">
+          <i data-lucide="edit-3"></i> Quick Sketch
+        </a>
+      </div>
+    </header>
+
+    <!-- Dashboard Controls & Stats Row -->
+    <div class="controls-row">
+      <div class="stats-mini-group">
+        <div class="stat-card-mini" style="border-color: var(--color-pink)">
+          <span class="stat-value-mini" id="stat-total">0</span>
+          <span class="stat-label-mini">Projects</span>
+        </div>
+        <div class="stat-card-mini" style="border-color: var(--color-yellow)">
+          <span class="stat-value-mini" id="stat-categories">0</span>
+          <span class="stat-label-mini">Categories</span>
+        </div>
+      </div>
+      <div class="search-wrapper-mini">
+        <input type="text" id="search-bar" class="search-input" placeholder="SEARCH WEBSITES BY NAME OR DESCRIPTION...">
+      </div>
+      <div class="filter-tags-mini" id="tag-filters">
+        <button class="filter-tag active" data-tag="all">All</button>
+        <!-- Categories will be injected here -->
+      </div>
+    </div>
+
+    <!-- Main Dashboard Grid -->
+    <div class="dashboard-grid">
+      <!-- Left Panel: Sites Grid -->
+      <main class="sites-section">
+        <div class="sites-grid" id="sites-container">
+          <!-- Site cards will be injected dynamically -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal overlay: Add / Edit Website -->
+  <div class="overlay" id="site-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Add Website</h2>
+        <button class="modal-close" id="modal-close-btn">
+          <i data-lucide="x" style="width: 28px; height: 28px; stroke-width: 3;"></i>
+        </button>
+      </div>
+      <form id="site-form">
+        <input type="hidden" id="site-index" value="">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="site-name">Website Title</label>
+          <input type="text" id="site-name" class="form-input" placeholder="e.g. My Fitness Hub" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="site-url">Website URL</label>
+          <input type="url" id="site-url" class="form-input" placeholder="https://example.com" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="site-desc">Description</label>
+          <input type="text" id="site-desc" class="form-input" placeholder="Short description of the website..." required>
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="site-tag">Category Tag</label>
+          <select id="site-tag" class="form-select">
+            <option value="Tools">Tools</option>
+            <option value="Notes">Notes</option>
+            <option value="Fitness">Fitness</option>
+            <option value="DSA">DSA</option>
+            <option value="Personal">Personal</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label for="site-theme">Theme Color Accent</label>
+          <select id="site-theme" class="form-select">
+            <option value="var(--color-pink)">Gumroad Pink</option>
+            <option value="var(--color-yellow)">Gumroad Yellow</option>
+            <option value="var(--color-blue)">Lime Green</option>
+            <option value="var(--color-cyan)">Cyan Blue</option>
+            <option value="var(--color-purple)">Soft Purple</option>
+            <option value="var(--color-orange)">Coral Orange</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Save Website</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lucide Icons & Motion Animations CDNs -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/motion@10.17.0/dist/motion.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
