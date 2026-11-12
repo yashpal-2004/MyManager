@@ -86,17 +86,6 @@ function init() {
   const savedSites = localStorage.getItem("hq_dashboard_websites");
   if (savedSites) {
     sites = JSON.parse(savedSites);
-    // Sync the new Portfolio website to localStorage if it's missing
-    if (!sites.some(s => s.url.includes("portfoliobyjs.vercel.app"))) {
-      sites.push({
-        name: "Portfolio",
-        url: "https://portfoliobyjs.vercel.app",
-        desc: "Personal developer portfolio website showcasing projects and skills.",
-        tag: "Personal",
-        theme: "var(--color-pink)"
-      });
-      saveSitesToStorage();
-    }
   } else {
     sites = [...DEFAULT_SITES];
     saveSitesToStorage();
@@ -160,6 +149,8 @@ function renderSites() {
   });
 
   if (filteredSites.length === 0) {
+    const countLabel = document.getElementById("project-count-label");
+    if (countLabel) countLabel.textContent = "— 00";
     sitesContainer.innerHTML = `
       <div class="site-card" style="grid-column: 1 / -1; padding: 40px; text-align: center; border-color: var(--color-orange)">
         <h3 style="margin-bottom: 8px;">No Websites Found</h3>
@@ -169,36 +160,37 @@ function renderSites() {
     return;
   }
 
+  const countLabel = document.getElementById("project-count-label");
+  if (countLabel) countLabel.textContent = `— ${String(filteredSites.length).padStart(2, "0")}`;
+
   filteredSites.forEach((site, index) => {
     // Find original index in master sites array
     const originalIndex = sites.indexOf(site);
 
     const card = document.createElement("div");
     card.className = "site-card animate-site-card";
+    card.tabIndex = 0;
+    card.setAttribute("role", "link");
+    card.setAttribute("aria-label", `Open ${site.name}`);
+    card.dataset.url = site.url;
     card.style.borderColor = site.theme || "var(--color-pink)";
 
     card.innerHTML = `
-      <div class="card-header" style="background-color: ${site.theme || 'var(--color-pink)'}">
+      <div class="card-header">
         <div>
           <span class="card-tag">${site.tag}</span>
         </div>
         <div style="display: flex; gap: 8px;">
-          <button class="btn btn-icon-only edit-site-btn" data-index="${originalIndex}" style="padding: 6px; box-shadow: 2px 2px 0px #000; font-size: 0.8rem; border-width: 2px;">
+          <button class="btn btn-icon-only edit-site-btn" aria-label="Edit ${site.name}" data-index="${originalIndex}">
             <i data-lucide="edit-2" style="width: 14px; height: 14px;"></i>
           </button>
-          <button class="btn btn-icon-only btn-danger delete-site-btn" data-index="${originalIndex}" style="padding: 6px; box-shadow: 2px 2px 0px #000; font-size: 0.8rem; border-width: 2px;">
+          <button class="btn btn-icon-only btn-danger delete-site-btn" aria-label="Delete ${site.name}" data-index="${originalIndex}">
             <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
           </button>
         </div>
       </div>
       <div class="card-body">
         <h3 class="card-title">${site.name}</h3>
-        <p class="card-desc">${site.desc}</p>
-      </div>
-      <div class="card-footer">
-        <a href="${site.url}" target="_blank" class="btn btn-primary" style="width: 100%;">
-          Open Website <i data-lucide="external-link" style="width: 16px; height: 16px;"></i>
-        </a>
       </div>
     `;
 
@@ -231,6 +223,19 @@ function renderSites() {
     btn.addEventListener("click", (e) => {
       const idx = e.currentTarget.dataset.index;
       deleteSite(idx);
+    });
+  });
+
+  document.querySelectorAll(".site-card").forEach(card => {
+    const openProject = () => window.open(card.dataset.url, "_blank", "noopener,noreferrer");
+    card.addEventListener("click", (e) => {
+      if (e.target.closest("button")) return;
+      openProject();
+    });
+    card.addEventListener("keydown", (e) => {
+      if (e.target !== card || !["Enter", " "].includes(e.key)) return;
+      e.preventDefault();
+      openProject();
     });
   });
 }

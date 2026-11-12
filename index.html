@@ -13,38 +13,42 @@
     <!-- Header Section -->
     <header>
       <div class="logo-section" style="display: flex; align-items: center; gap: 14px;">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="border: 3px solid #000000; box-shadow: 3px 3px 0px #000000; background-color: var(--color-yellow); padding: 4px; flex-shrink: 0; transform: rotate(-5deg);">
-          <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" fill="var(--color-pink)" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
         <div>
-          <h1 style="border-bottom: 4px solid var(--text-primary); display: inline-block; line-height: 1; margin-bottom: 2px;">YASHPAL'S DASHBOARD</h1>
-          <p style="font-size: 0.95rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">MANAGE &middot; TRACK &middot; BUILD</p>
+          <p class="eyebrow">MY SPACE <span>—</span> 2026</p>
+          <h1>Yashpal's<br>workbench</h1>
         </div>
       </div>
       <div class="header-actions">
         <button id="add-site-btn" class="btn btn-primary">
-          <i data-lucide="plus-circle"></i> Add Website
+          <i data-lucide="plus"></i> Add project
         </button>
         <a href="https://excalidraw.com" target="_blank" class="btn btn-pink">
-          <i data-lucide="edit-3"></i> Quick Sketch
+          <i data-lucide="edit-3"></i> Quick sketch
         </a>
       </div>
     </header>
 
     <!-- Dashboard Controls & Stats Row -->
+    <section class="intro-panel">
+      <div class="intro-copy">
+        <p class="eyebrow">A — B <span>•</span> PERSONAL DIRECTORY</p>
+        <h2>Ideas in<br><em>progress.</em></h2>
+        <p class="intro-note">A considered space for the tools, notes, experiments, and projects I return to.</p>
+      </div>
+      <div class="orbit-art" aria-hidden="true"><span class="orbit-square"></span><span class="orbit-circle"></span><span class="orbit-inner"></span></div>
+      <div class="intro-count"><span id="stat-total">0</span><small>projects<br>in orbit</small></div>
+    </section>
+
     <div class="controls-row">
       <div class="stats-mini-group">
-        <div class="stat-card-mini" style="border-color: var(--color-pink)">
-          <span class="stat-value-mini" id="stat-total">0</span>
-          <span class="stat-label-mini">Projects</span>
-        </div>
-        <div class="stat-card-mini" style="border-color: var(--color-yellow)">
+        <div class="stat-card-mini">
           <span class="stat-value-mini" id="stat-categories">0</span>
           <span class="stat-label-mini">Categories</span>
         </div>
       </div>
       <div class="search-wrapper-mini">
-        <input type="text" id="search-bar" class="search-input" placeholder="SEARCH WEBSITES BY NAME OR DESCRIPTION...">
+        <i data-lucide="search"></i><input type="text" id="search-bar" class="search-input" placeholder="Find a project">
       </div>
       <div class="filter-tags-mini" id="tag-filters">
         <button class="filter-tag active" data-tag="all">All</button>
@@ -53,6 +57,7 @@
     </div>
 
     <!-- Main Dashboard Grid -->
+    <div class="section-heading"><div><p class="eyebrow">SELECTED WORK</p><h2>Projects <span id="project-count-label">— 00</span></h2></div><span class="section-index">01 / DIRECTORY</span></div>
     <div class="dashboard-grid">
       <!-- Left Panel: Sites Grid -->
       <main class="sites-section">
