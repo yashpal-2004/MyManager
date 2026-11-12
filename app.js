@@ -177,16 +177,15 @@ function renderSites() {
 
     card.innerHTML = `
       <div class="card-header">
-        <div>
-          <span class="card-tag">${site.tag}</span>
-        </div>
-        <div style="display: flex; gap: 8px;">
-          <button class="btn btn-icon-only edit-site-btn" aria-label="Edit ${site.name}" data-index="${originalIndex}">
-            <i data-lucide="edit-2" style="width: 14px; height: 14px;"></i>
+        <span class="card-tag">${site.tag}</span>
+        <div class="project-menu-wrap">
+          <button class="project-menu-btn" aria-label="Project options for ${site.name}" aria-haspopup="true" aria-expanded="false" data-index="${originalIndex}">
+            <i data-lucide="more-horizontal" style="width: 18px; height: 18px;"></i>
           </button>
-          <button class="btn btn-icon-only btn-danger delete-site-btn" aria-label="Delete ${site.name}" data-index="${originalIndex}">
-            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
-          </button>
+          <div class="project-menu" hidden>
+            <button class="project-menu-item edit-site-btn" data-index="${originalIndex}"><i data-lucide="pencil" style="width:14px;height:14px"></i> Edit</button>
+            <button class="project-menu-item delete-site-btn" data-index="${originalIndex}"><i data-lucide="trash-2" style="width:14px;height:14px"></i> Delete</button>
+          </div>
         </div>
       </div>
       <div class="card-body">
@@ -212,8 +211,21 @@ function renderSites() {
   }
 
   // Attach card specific event listeners
+  document.querySelectorAll(".project-menu-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const menu = btn.nextElementSibling;
+      const shouldOpen = menu.hidden;
+      document.querySelectorAll(".project-menu").forEach(item => { item.hidden = true; });
+      document.querySelectorAll(".project-menu-btn").forEach(item => item.setAttribute("aria-expanded", "false"));
+      menu.hidden = !shouldOpen;
+      btn.setAttribute("aria-expanded", String(shouldOpen));
+    });
+  });
+
   document.querySelectorAll(".edit-site-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
+      e.stopPropagation();
       const idx = e.currentTarget.dataset.index;
       openModalForEdit(idx);
     });
@@ -221,6 +233,7 @@ function renderSites() {
 
   document.querySelectorAll(".delete-site-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
+      e.stopPropagation();
       const idx = e.currentTarget.dataset.index;
       deleteSite(idx);
     });
@@ -229,7 +242,7 @@ function renderSites() {
   document.querySelectorAll(".site-card").forEach(card => {
     const openProject = () => window.open(card.dataset.url, "_blank", "noopener,noreferrer");
     card.addEventListener("click", (e) => {
-      if (e.target.closest("button")) return;
+      if (e.target.closest("button") || e.target.closest(".project-menu")) return;
       openProject();
     });
     card.addEventListener("keydown", (e) => {
@@ -238,7 +251,14 @@ function renderSites() {
       openProject();
     });
   });
+
 }
+
+document.addEventListener("click", (e) => {
+  if (e.target.closest(".project-menu-wrap")) return;
+  document.querySelectorAll(".project-menu").forEach(menu => { menu.hidden = true; });
+  document.querySelectorAll(".project-menu-btn").forEach(btn => btn.setAttribute("aria-expanded", "false"));
+});
 
 
 
@@ -286,9 +306,8 @@ function setupEventListeners() {
     const url = document.getElementById("site-url").value;
     const desc = document.getElementById("site-desc").value;
     const tag = document.getElementById("site-tag").value;
-    const theme = document.getElementById("site-theme").value;
-
-    const siteData = { name, url, desc, tag, theme };
+    const existingTheme = index !== "" ? sites[index].theme : undefined;
+    const siteData = { name, url, desc, tag, ...(existingTheme ? { theme: existingTheme } : {}) };
 
     if (index !== "") {
       // Edit
@@ -328,8 +347,6 @@ function openModalForEdit(index) {
   document.getElementById("site-url").value = site.url;
   document.getElementById("site-desc").value = site.desc;
   document.getElementById("site-tag").value = site.tag;
-  document.getElementById("site-theme").value = site.theme || "var(--color-pink)";
-
   modalTitle.textContent = "Edit Website";
   siteModal.style.display = "flex";
 
