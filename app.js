@@ -62,6 +62,38 @@ const DEFAULT_SITES = [
 let sites = [];
 let currentFilter = "all";
 let searchQuery = "";
+const PROJECT_ICONS = ["globe-2", "layout-dashboard", "notebook-tabs", "book-open", "dumbbell", "activity", "brain", "code-2", "terminal", "graduation-cap", "briefcase-business", "user-round", "house", "heart", "star", "rocket", "lightbulb", "palette", "pen-tool", "camera", "music-2", "gamepad-2", "shopping-bag", "wallet", "calendar-days", "check-square", "chart-no-axes-combined", "database", "cloud", "wrench", "sparkles", "layers-2"];
+
+function iconForSite(site) {
+  if (site.icon && PROJECT_ICONS.includes(site.icon)) return site.icon;
+  const text = `${site.name} ${site.tag}`.toLowerCase();
+  if (/fitness|workout|gym|health/.test(text)) return "dumbbell";
+  if (/note|journal|diary|book/.test(text)) return "notebook-tabs";
+  if (/dsa|code|dev|program/.test(text)) return "code-2";
+  if (/portfolio|personal/.test(text)) return "user-round";
+  if (/tracker|task|tool/.test(text)) return "layout-dashboard";
+  return "globe-2";
+}
+
+function renderIconPicker(selectedIcon = "globe-2") {
+  const picker = document.getElementById("icon-picker");
+  const iconInput = document.getElementById("site-icon");
+  iconInput.value = selectedIcon;
+  picker.innerHTML = PROJECT_ICONS.map(icon => `
+    <button type="button" class="icon-choice ${icon === selectedIcon ? "selected" : ""}" data-icon="${icon}" aria-label="${icon.replaceAll("-", " ")}" aria-pressed="${icon === selectedIcon}">
+      <i data-lucide="${icon}"></i>
+    </button>
+  `).join("");
+  if (window.lucide) window.lucide.createIcons();
+  picker.querySelectorAll(".icon-choice").forEach(button => button.addEventListener("click", () => {
+    iconInput.value = button.dataset.icon;
+    picker.querySelectorAll(".icon-choice").forEach(choice => {
+      const isSelected = choice === button;
+      choice.classList.toggle("selected", isSelected);
+      choice.setAttribute("aria-pressed", String(isSelected));
+    });
+  }));
+}
 
 // DOM Elements
 const sitesContainer = document.getElementById("sites-container");
@@ -177,7 +209,6 @@ function renderSites() {
 
     card.innerHTML = `
       <div class="card-header">
-        <span class="card-tag">${site.tag}</span>
         <div class="project-menu-wrap">
           <button class="project-menu-btn" aria-label="Project options for ${site.name}" aria-haspopup="true" aria-expanded="false" data-index="${originalIndex}">
             <i data-lucide="more-horizontal" style="width: 18px; height: 18px;"></i>
@@ -189,6 +220,7 @@ function renderSites() {
         </div>
       </div>
       <div class="card-body">
+        <span class="project-icon" aria-hidden="true"><i data-lucide="${iconForSite(site)}"></i></span>
         <h3 class="card-title">${site.name}</h3>
       </div>
     `;
@@ -282,6 +314,7 @@ function setupEventListeners() {
     siteForm.reset();
     siteIndexInput.value = "";
     modalTitle.textContent = "Add Website";
+    renderIconPicker("globe-2");
     siteModal.style.display = "flex";
     if (window.motion) {
       window.motion.animate(
@@ -306,8 +339,9 @@ function setupEventListeners() {
     const url = document.getElementById("site-url").value;
     const desc = document.getElementById("site-desc").value;
     const tag = document.getElementById("site-tag").value;
+    const icon = document.getElementById("site-icon").value || "globe-2";
     const existingTheme = index !== "" ? sites[index].theme : undefined;
-    const siteData = { name, url, desc, tag, ...(existingTheme ? { theme: existingTheme } : {}) };
+    const siteData = { name, url, desc, tag, icon, ...(existingTheme ? { theme: existingTheme } : {}) };
 
     if (index !== "") {
       // Edit
@@ -347,6 +381,7 @@ function openModalForEdit(index) {
   document.getElementById("site-url").value = site.url;
   document.getElementById("site-desc").value = site.desc;
   document.getElementById("site-tag").value = site.tag;
+  renderIconPicker(iconForSite(site));
   modalTitle.textContent = "Edit Website";
   siteModal.style.display = "flex";
 
